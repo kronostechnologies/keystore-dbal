@@ -1,0 +1,29 @@
+{
+    "name": "kronos/keystore-dbal",
+    "description": "DBAL implementation of kronos/keystore repository",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Kronos\\Keystore\\Repository\\DBAL\\": "src/DBAL/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kronos\\Tests\\Keystore\\Repository\\DBAL\\": "tests/DBAL/"
+        }
+    },
+    "require": {
+        "kronos/keystore": "^0.1.0",
+        "doctrine/dbal": "~2.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jonathan Breton",
+            "email": "jbreton@kronostechnologies.com"
+        }
+    ]
+}
