@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit backupGlobals="false"
+	backupStaticAttributes="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	syntaxCheck="false"
+	verbose="true"
+>
+<testsuites>
+	<testsuite name="Kronos-Log">
+		<directory>./tests/DBAL/</directory>
+	</testsuite>
+</testsuites>
+
+</phpunit>
