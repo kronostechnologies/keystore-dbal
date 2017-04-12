@@ -73,7 +73,13 @@ class Adaptor implements RepositoryInterface {
 	}
 
 	public function delete($key) {
-		// TODO: Implement delete() method.
+		$query = 'DELETE FROM '.$this->tableName.' WHERE '.$this->keyField.' = ?;';
+
+		$affectedRows = $this->connection->executeUpdate($query, [$key]);
+
+		if(!$affectedRows) {
+			throw new KeyNotFoundException('No rows where deleted');
+		}
 	}
 
 }

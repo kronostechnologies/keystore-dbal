@@ -124,7 +124,7 @@ class AdaptorTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame(self::VALUE, $actualValue);
 	}
 
-	public function test_ZeroRowReturn_get_ShouldCloseResultCursorAndThrowKeyNotFoundException() {
+	public function test_ZeroRowReturned_get_ShouldCloseResultCursorAndThrowKeyNotFoundException() {
 		$this->givenConfiguredAdaptor();
 		$this->result
 			->method('rowCount')
@@ -135,6 +135,30 @@ class AdaptorTest extends \PHPUnit_Framework_TestCase {
 		$this->expectException(KeyNotFoundException::class);
 
 		$this->adaptor->get(self::KEY);
+	}
+
+	public function test_ConfiguredAdaptor_delete_ShouldExecuteUpdate() {
+		$this->givenConfiguredAdaptor();
+		$this->connection
+			->expects(self::once())
+			->method('executeUpdate')
+			->with(
+				'DELETE FROM '.self::QUOTED_TABLE_NAME.' WHERE '.self::QUOTED_KEY_FIELD.' = ?;',
+				[self::KEY]
+			)
+			->willReturn(1);
+
+		$this->adaptor->delete(self::KEY);
+	}
+
+	public function test_NoRowAffected_delete_ShouldThrowKeyNotFoundException() {
+		$this->givenConfiguredAdaptor();
+		$this->connection
+			->method('executeUpdate')
+			->willReturn(0);
+		$this->expectException(KeyNotFoundException::class);
+
+		$this->adaptor->delete(self::KEY);
 	}
 
 	private function givenConfiguredAdaptor() {
