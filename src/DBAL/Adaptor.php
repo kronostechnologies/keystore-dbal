@@ -56,6 +56,11 @@ class Adaptor implements RepositoryInterface {
 		$this->connection->executeUpdate($query, [$key, $value]);
 	}
 
+	/**
+	 * @param string $key
+	 * @return mixed
+	 * @throws KeyNotFoundException
+	 */
 	public function get($key) {
 		$query = 'SELECT ' . $this->valueField . ' AS ' . self::VALUE_FIELD_ALIAS . ' FROM ' . $this->tableName . ' WHERE ' . $this->keyField . ' = ?;';
 
@@ -72,6 +77,10 @@ class Adaptor implements RepositoryInterface {
 		}
 	}
 
+	/**
+	 * @param string $key
+	 * @throws KeyNotFoundException
+	 */
 	public function delete($key) {
 		$query = 'DELETE FROM '.$this->tableName.' WHERE '.$this->keyField.' = ?;';
 
