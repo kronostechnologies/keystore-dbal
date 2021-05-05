@@ -181,6 +181,8 @@ class AdaptorTest extends \PHPUnit_Framework_TestCase {
 		$this->result
 			->method('rowCount')
 			->willReturn(1);
+
+		$this->result->method('fetch')->willReturn([Adaptor::VALUE_FIELD_ALIAS => 'value']);
 	}
 
 }
