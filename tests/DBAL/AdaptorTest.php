@@ -5,8 +5,10 @@ namespace Kronos\Tests\Keystore\Repository\DBAL;
 use Doctrine\DBAL\Connection;
 use Kronos\Keystore\Exception\KeyNotFoundException;
 use Kronos\Keystore\Repository\DBAL\Adaptor;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class AdaptorTest extends \PHPUnit_Framework_TestCase {
+class AdaptorTest extends TestCase {
 	const TABLE_NAME = 'table';
 	const KEY_FIELD = 'keyField';
 	const VALUE_FIELD = 'valueField';
@@ -23,16 +25,17 @@ class AdaptorTest extends \PHPUnit_Framework_TestCase {
 	private $adaptor;
 
 	/**
-	 * @var \PHPUnit_Framework_MockObject_MockObject
+	 * @var MockObject
 	 */
 	private $connection;
 
 	/**
-	 * @var \PHPUnit_Framework_MockObject_MockObject
+	 * @var MockObject
 	 */
 	private $result;
 
-	public function setUp() {
+	public function setUp() : void
+    {
 		$this->connection = $this->createMock(Connection::class);
 	}
 
