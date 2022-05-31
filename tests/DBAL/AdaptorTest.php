@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use Kronos\Keystore\Exception\KeyNotFoundException;
 use Kronos\Keystore\Repository\DBAL\Adaptor;
+use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -100,8 +101,8 @@ class AdaptorTest extends TestCase {
 		$this->givenRowReturned();
 		$this->result
 			->expects(self::once())
-			->method('fetch')
-			->with(\PDO::FETCH_ASSOC);
+	                ->method('fetch')
+           	        ->with(PDO::FETCH_ASSOC);
 
 		$this->adaptor->get(self::KEY);
 	}
