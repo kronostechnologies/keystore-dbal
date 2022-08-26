@@ -3,10 +3,9 @@
 namespace Kronos\Tests\Keystore\Repository\DBAL;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Result;
 use Kronos\Keystore\Exception\KeyNotFoundException;
 use Kronos\Keystore\Repository\DBAL\Adaptor;
-use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +31,7 @@ class AdaptorTest extends TestCase {
 	private $connection;
 
 	/**
-	 * @var MockObject&Statement
+	 * @var MockObject&Result
 	 */
 	private $result;
 
@@ -58,7 +57,7 @@ class AdaptorTest extends TestCase {
 		$this->givenConfiguredAdaptor();
 		$this->connection
 			->expects(self::once())
-			->method('executeUpdate')
+			->method('executeStatement')
 			->with(
 				'INSERT INTO '.self::QUOTED_TABLE_NAME.' ('.self::QUOTED_KEY_FIELD.', '.self::QUOTED_VALUE_FIELD.') '.
 				'VALUES (?,?) '.
@@ -101,18 +100,7 @@ class AdaptorTest extends TestCase {
 		$this->givenRowReturned();
 		$this->result
 			->expects(self::once())
-	                ->method('fetch')
-           	        ->with(PDO::FETCH_ASSOC);
-
-		$this->adaptor->get(self::KEY);
-	}
-
-	public function test_RowFetched_get_ShouldCloseResultCursor() {
-		$this->givenConfiguredAdaptor();
-		$this->givenRowReturned();
-		$this->result
-			->expects(self::once())
-			->method('closeCursor');
+            ->method('fetchAssociative');
 
 		$this->adaptor->get(self::KEY);
 	}
@@ -134,9 +122,6 @@ class AdaptorTest extends TestCase {
 		$this->result
 			->method('rowCount')
 			->willReturn(0);
-		$this->result
-			->expects(self::once())
-			->method('closeCursor');
 		$this->expectException(KeyNotFoundException::class);
 
 		$this->adaptor->get(self::KEY);
@@ -146,7 +131,7 @@ class AdaptorTest extends TestCase {
 		$this->givenConfiguredAdaptor();
 		$this->connection
 			->expects(self::once())
-			->method('executeUpdate')
+			->method('executeStatement')
 			->with(
 				'DELETE FROM '.self::QUOTED_TABLE_NAME.' WHERE '.self::QUOTED_KEY_FIELD.' = ?;',
 				[self::KEY]
@@ -159,7 +144,7 @@ class AdaptorTest extends TestCase {
 	public function test_NoRowAffected_delete_ShouldThrowKeyNotFoundException() {
 		$this->givenConfiguredAdaptor();
 		$this->connection
-			->method('executeUpdate')
+			->method('executeStatement')
 			->willReturn(0);
 		$this->expectException(KeyNotFoundException::class);
 
@@ -174,7 +159,7 @@ class AdaptorTest extends TestCase {
 				self::QUOTED_KEY_FIELD,
 				self::QUOTED_VALUE_FIELD
 			));
-		$this->result = $this->createMock(Statement::class);
+		$this->result = $this->createMock(Result::class);
 		$this->connection
 			->method('executeQuery')
 			->willReturn($this->result);
@@ -187,6 +172,6 @@ class AdaptorTest extends TestCase {
 			->method('rowCount')
 			->willReturn(1);
 
-		$this->result->method('fetch')->willReturn([Adaptor::VALUE_FIELD_ALIAS => 'value']);
+		$this->result->method('fetchAssociative')->willReturn([Adaptor::VALUE_FIELD_ALIAS => 'value']);
 	}
 }
