@@ -3,190 +3,175 @@
 namespace Kronos\Tests\Keystore\Repository\DBAL;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Result;
 use Kronos\Keystore\Exception\KeyNotFoundException;
 use Kronos\Keystore\Repository\DBAL\Adaptor;
-use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class AdaptorTest extends TestCase {
-	const TABLE_NAME = 'table';
-	const KEY_FIELD = 'keyField';
-	const VALUE_FIELD = 'valueField';
+    const TABLE_NAME = 'table';
+    const KEY_FIELD = 'keyField';
+    const VALUE_FIELD = 'valueField';
 
-	const QUOTED_TABLE_NAME = 'quotedTable';
-	const QUOTED_KEY_FIELD = 'quotedKeyField';
-	const QUOTED_VALUE_FIELD = 'quotedValueFiled';
-	const KEY = 'key';
-	const VALUE = 'value';
+    const QUOTED_TABLE_NAME = 'quotedTable';
+    const QUOTED_KEY_FIELD = 'quotedKeyField';
+    const QUOTED_VALUE_FIELD = 'quotedValueFiled';
+    const KEY = 'key';
+    const VALUE = 'value';
 
-	/**
-	 * @var Adaptor
-	 */
-	private $adaptor;
+    /**
+     * @var Adaptor
+     */
+    private $adaptor;
 
-	/**
-	 * @var MockObject&Connection
-	 */
-	private $connection;
+    /**
+     * @var MockObject&Connection
+     */
+    private $connection;
 
-	/**
-	 * @var MockObject&Statement
-	 */
-	private $result;
+    /**
+     * @var MockObject&Result
+     */
+    private $result;
 
-	public function setUp() : void
+    public function setUp() : void
     {
-		$this->connection = $this->createMock(Connection::class);
-	}
+        $this->connection = $this->createMock(Connection::class);
+    }
 
-	public function test_constuctor_ShouldQuoteTableAndFields() {
-		$this->connection
-			->expects(self::exactly(3))
-			->method('quoteIdentifier')
-			->withConsecutive(
-				[self::TABLE_NAME],
-				[self::KEY_FIELD],
-				[self::VALUE_FIELD]
-			);
+    public function test_constuctor_ShouldQuoteTableAndFields() {
+        $this->connection
+            ->expects(self::exactly(3))
+            ->method('quoteIdentifier')
+            ->withConsecutive(
+                [self::TABLE_NAME],
+                [self::KEY_FIELD],
+                [self::VALUE_FIELD]
+            );
 
-		$this->adaptor = new Adaptor($this->connection, self::TABLE_NAME, self::KEY_FIELD, self::VALUE_FIELD);
-	}
+        $this->adaptor = new Adaptor($this->connection, self::TABLE_NAME, self::KEY_FIELD, self::VALUE_FIELD);
+    }
 
-	public function test_ConfiguredAdaptor_set_ShouldExecuteUpdate() {
-		$this->givenConfiguredAdaptor();
-		$this->connection
-			->expects(self::once())
-			->method('executeUpdate')
-			->with(
-				'INSERT INTO '.self::QUOTED_TABLE_NAME.' ('.self::QUOTED_KEY_FIELD.', '.self::QUOTED_VALUE_FIELD.') '.
-				'VALUES (?,?) '.
-				'ON DUPLICATE KEY UPDATE '.self::QUOTED_VALUE_FIELD.' = VALUES('.self::QUOTED_VALUE_FIELD.')',
-				[
-					self::KEY,
-					self::VALUE
-				]
-			);
+    public function test_ConfiguredAdaptor_set_ShouldExecuteUpdate() {
+        $this->givenConfiguredAdaptor();
+        $this->connection
+            ->expects(self::once())
+            ->method('executeStatement')
+            ->with(
+                'INSERT INTO '.self::QUOTED_TABLE_NAME.' ('.self::QUOTED_KEY_FIELD.', '.self::QUOTED_VALUE_FIELD.') '.
+                'VALUES (?,?) '.
+                'ON DUPLICATE KEY UPDATE '.self::QUOTED_VALUE_FIELD.' = VALUES('.self::QUOTED_VALUE_FIELD.')',
+                [
+                    self::KEY,
+                    self::VALUE
+                ]
+            );
 
-		$this->adaptor->set(self::KEY, self::VALUE);
-	}
+        $this->adaptor->set(self::KEY, self::VALUE);
+    }
 
-	public function test_ConfiguredAdaptor_get_ShouldExecuteQuery() {
-		$this->givenConfiguredAdaptor();
-		$this->givenRowReturned();
-		$this->connection
-			->expects(self::once())
-			->method('executeQuery')
-			->with(
-				'SELECT '.self::QUOTED_VALUE_FIELD.' AS value_field FROM '.self::QUOTED_TABLE_NAME.' WHERE '.self::QUOTED_KEY_FIELD.' = ?;',
-				[self::KEY]
-			);
+    public function test_ConfiguredAdaptor_get_ShouldExecuteQuery() {
+        $this->givenConfiguredAdaptor();
+        $this->givenRowReturned();
+        $this->connection
+            ->expects(self::once())
+            ->method('executeQuery')
+            ->with(
+                'SELECT '.self::QUOTED_VALUE_FIELD.' AS value_field FROM '.self::QUOTED_TABLE_NAME.' WHERE '.self::QUOTED_KEY_FIELD.' = ?;',
+                [self::KEY]
+            );
 
-		$this->adaptor->get(self::KEY);
-	}
+        $this->adaptor->get(self::KEY);
+    }
 
-	public function test_QueryReturnResult_get_ShouldGetRowCount() {
-		$this->givenConfiguredAdaptor();
-		$this->givenRowReturned();
-		$this->result
-			->expects(self::once())
-			->method('rowCount');
+    public function test_QueryReturnResult_get_ShouldGetRowCount() {
+        $this->givenConfiguredAdaptor();
+        $this->givenRowReturned();
+        $this->result
+            ->expects(self::once())
+            ->method('rowCount');
 
-		$this->adaptor->get(self::KEY);
-	}
+        $this->adaptor->get(self::KEY);
+    }
 
-	public function test_RowReturned_get_ShouldFetchRow() {
-		$this->givenConfiguredAdaptor();
-		$this->givenRowReturned();
-		$this->result
-			->expects(self::once())
-	                ->method('fetch')
-           	        ->with(PDO::FETCH_ASSOC);
+    public function test_RowReturned_get_ShouldFetchRow() {
+        $this->givenConfiguredAdaptor();
+        $this->givenRowReturned();
+        $this->result
+            ->expects(self::once())
+            ->method('fetchAssociative');
 
-		$this->adaptor->get(self::KEY);
-	}
+        $this->adaptor->get(self::KEY);
+    }
 
-	public function test_RowFetched_get_ShouldCloseResultCursor() {
-		$this->givenConfiguredAdaptor();
-		$this->givenRowReturned();
-		$this->result
-			->expects(self::once())
-			->method('closeCursor');
+    public function test_RowFetched_get_ShouldReturnValue() {
+        $this->givenConfiguredAdaptor();
+        $this->givenRowReturned();
+        $this->result
+            ->method('fetch')
+            ->willReturn([Adaptor::VALUE_FIELD_ALIAS => self::VALUE]);
 
-		$this->adaptor->get(self::KEY);
-	}
+        $actualValue = $this->adaptor->get(self::KEY);
 
-	public function test_RowFetched_get_ShouldReturnValue() {
-		$this->givenConfiguredAdaptor();
-		$this->givenRowReturned();
-		$this->result
-			->method('fetch')
-			->willReturn([Adaptor::VALUE_FIELD_ALIAS => self::VALUE]);
+        $this->assertSame(self::VALUE, $actualValue);
+    }
 
-		$actualValue = $this->adaptor->get(self::KEY);
+    public function test_ZeroRowReturned_get_ShouldCloseResultCursorAndThrowKeyNotFoundException() {
+        $this->givenConfiguredAdaptor();
+        $this->result
+            ->method('rowCount')
+            ->willReturn(0);
+        $this->expectException(KeyNotFoundException::class);
 
-		$this->assertSame(self::VALUE, $actualValue);
-	}
+        $this->adaptor->get(self::KEY);
+    }
 
-	public function test_ZeroRowReturned_get_ShouldCloseResultCursorAndThrowKeyNotFoundException() {
-		$this->givenConfiguredAdaptor();
-		$this->result
-			->method('rowCount')
-			->willReturn(0);
-		$this->result
-			->expects(self::once())
-			->method('closeCursor');
-		$this->expectException(KeyNotFoundException::class);
+    public function test_ConfiguredAdaptor_delete_ShouldExecuteUpdate() {
+        $this->givenConfiguredAdaptor();
+        $this->connection
+            ->expects(self::once())
+            ->method('executeStatement')
+            ->with(
+                'DELETE FROM '.self::QUOTED_TABLE_NAME.' WHERE '.self::QUOTED_KEY_FIELD.' = ?;',
+                [self::KEY]
+            )
+            ->willReturn(1);
 
-		$this->adaptor->get(self::KEY);
-	}
+        $this->adaptor->delete(self::KEY);
+    }
 
-	public function test_ConfiguredAdaptor_delete_ShouldExecuteUpdate() {
-		$this->givenConfiguredAdaptor();
-		$this->connection
-			->expects(self::once())
-			->method('executeUpdate')
-			->with(
-				'DELETE FROM '.self::QUOTED_TABLE_NAME.' WHERE '.self::QUOTED_KEY_FIELD.' = ?;',
-				[self::KEY]
-			)
-			->willReturn(1);
+    public function test_NoRowAffected_delete_ShouldThrowKeyNotFoundException() {
+        $this->givenConfiguredAdaptor();
+        $this->connection
+            ->method('executeStatement')
+            ->willReturn(0);
+        $this->expectException(KeyNotFoundException::class);
 
-		$this->adaptor->delete(self::KEY);
-	}
+        $this->adaptor->delete(self::KEY);
+    }
 
-	public function test_NoRowAffected_delete_ShouldThrowKeyNotFoundException() {
-		$this->givenConfiguredAdaptor();
-		$this->connection
-			->method('executeUpdate')
-			->willReturn(0);
-		$this->expectException(KeyNotFoundException::class);
+    private function givenConfiguredAdaptor() {
+        $this->connection
+            ->method('quoteIdentifier')
+            ->will($this->onConsecutiveCalls(
+                self::QUOTED_TABLE_NAME,
+                self::QUOTED_KEY_FIELD,
+                self::QUOTED_VALUE_FIELD
+            ));
+        $this->result = $this->createMock(Result::class);
+        $this->connection
+            ->method('executeQuery')
+            ->willReturn($this->result);
 
-		$this->adaptor->delete(self::KEY);
-	}
+        $this->adaptor = new Adaptor($this->connection, self::TABLE_NAME, self::KEY_FIELD, self::VALUE_FIELD);
+    }
 
-	private function givenConfiguredAdaptor() {
-		$this->connection
-			->method('quoteIdentifier')
-			->will($this->onConsecutiveCalls(
-				self::QUOTED_TABLE_NAME,
-				self::QUOTED_KEY_FIELD,
-				self::QUOTED_VALUE_FIELD
-			));
-		$this->result = $this->createMock(Statement::class);
-		$this->connection
-			->method('executeQuery')
-			->willReturn($this->result);
+    private function givenRowReturned() {
+        $this->result
+            ->method('rowCount')
+            ->willReturn(1);
 
-		$this->adaptor = new Adaptor($this->connection, self::TABLE_NAME, self::KEY_FIELD, self::VALUE_FIELD);
-	}
-
-	private function givenRowReturned() {
-		$this->result
-			->method('rowCount')
-			->willReturn(1);
-
-		$this->result->method('fetch')->willReturn([Adaptor::VALUE_FIELD_ALIAS => 'value']);
-	}
+        $this->result->method('fetchAssociative')->willReturn([Adaptor::VALUE_FIELD_ALIAS => 'value']);
+    }
 }
