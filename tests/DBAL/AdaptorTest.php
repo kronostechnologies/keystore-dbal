@@ -9,16 +9,17 @@ use Kronos\Keystore\Repository\DBAL\Adaptor;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class AdaptorTest extends TestCase {
-    const TABLE_NAME = 'table';
-    const KEY_FIELD = 'keyField';
-    const VALUE_FIELD = 'valueField';
+class AdaptorTest extends TestCase
+{
+    private const TABLE_NAME = 'table';
+    private const KEY_FIELD = 'keyField';
+    private const VALUE_FIELD = 'valueField';
 
-    const QUOTED_TABLE_NAME = 'quotedTable';
-    const QUOTED_KEY_FIELD = 'quotedKeyField';
-    const QUOTED_VALUE_FIELD = 'quotedValueFiled';
-    const KEY = 'key';
-    const VALUE = 'value';
+    private const QUOTED_TABLE_NAME = 'quotedTable';
+    private const QUOTED_KEY_FIELD = 'quotedKeyField';
+    private const QUOTED_VALUE_FIELD = 'quotedValueFiled';
+    private const KEY = 'key';
+    private const VALUE = 'value';
 
     /**
      * @var Adaptor
@@ -35,12 +36,13 @@ class AdaptorTest extends TestCase {
      */
     private $result;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->connection = $this->createMock(Connection::class);
     }
 
-    public function test_constuctor_ShouldQuoteTableAndFields() {
+    public function test_constuctor_ShouldQuoteTableAndFields()
+    {
         $this->connection
             ->expects(self::exactly(3))
             ->method('quoteIdentifier')
@@ -53,15 +55,17 @@ class AdaptorTest extends TestCase {
         $this->adaptor = new Adaptor($this->connection, self::TABLE_NAME, self::KEY_FIELD, self::VALUE_FIELD);
     }
 
-    public function test_ConfiguredAdaptor_set_ShouldExecuteUpdate() {
+    public function test_ConfiguredAdaptor_set_ShouldExecuteUpdate()
+    {
         $this->givenConfiguredAdaptor();
         $this->connection
             ->expects(self::once())
             ->method('executeStatement')
             ->with(
-                'INSERT INTO '.self::QUOTED_TABLE_NAME.' ('.self::QUOTED_KEY_FIELD.', '.self::QUOTED_VALUE_FIELD.') '.
-                'VALUES (?,?) '.
-                'ON DUPLICATE KEY UPDATE '.self::QUOTED_VALUE_FIELD.' = VALUES('.self::QUOTED_VALUE_FIELD.')',
+                'INSERT INTO ' . self::QUOTED_TABLE_NAME
+                . ' (' . self::QUOTED_KEY_FIELD . ', ' . self::QUOTED_VALUE_FIELD . ') ' .
+                'VALUES (?,?) ' .
+                'ON DUPLICATE KEY UPDATE ' . self::QUOTED_VALUE_FIELD . ' = VALUES(' . self::QUOTED_VALUE_FIELD . ')',
                 [
                     self::KEY,
                     self::VALUE
@@ -71,21 +75,25 @@ class AdaptorTest extends TestCase {
         $this->adaptor->set(self::KEY, self::VALUE);
     }
 
-    public function test_ConfiguredAdaptor_get_ShouldExecuteQuery() {
+    public function test_ConfiguredAdaptor_get_ShouldExecuteQuery()
+    {
         $this->givenConfiguredAdaptor();
         $this->givenRowReturned();
         $this->connection
             ->expects(self::once())
             ->method('executeQuery')
             ->with(
-                'SELECT '.self::QUOTED_VALUE_FIELD.' AS value_field FROM '.self::QUOTED_TABLE_NAME.' WHERE '.self::QUOTED_KEY_FIELD.' = ?;',
+                'SELECT ' . self::QUOTED_VALUE_FIELD
+                        . ' AS value_field FROM ' . self::QUOTED_TABLE_NAME
+                        . ' WHERE ' . self::QUOTED_KEY_FIELD . ' = ?;',
                 [self::KEY]
             );
 
         $this->adaptor->get(self::KEY);
     }
 
-    public function test_QueryReturnResult_get_ShouldGetRowCount() {
+    public function test_QueryReturnResult_get_ShouldGetRowCount()
+    {
         $this->givenConfiguredAdaptor();
         $this->givenRowReturned();
         $this->result
@@ -95,7 +103,8 @@ class AdaptorTest extends TestCase {
         $this->adaptor->get(self::KEY);
     }
 
-    public function test_RowReturned_get_ShouldFetchRow() {
+    public function test_RowReturned_get_ShouldFetchRow()
+    {
         $this->givenConfiguredAdaptor();
         $this->givenRowReturned();
         $this->result
@@ -105,7 +114,8 @@ class AdaptorTest extends TestCase {
         $this->adaptor->get(self::KEY);
     }
 
-    public function test_RowFetched_get_ShouldReturnValue() {
+    public function test_RowFetched_get_ShouldReturnValue()
+    {
         $this->givenConfiguredAdaptor();
         $this->givenRowReturned();
         $this->result
@@ -117,7 +127,8 @@ class AdaptorTest extends TestCase {
         $this->assertSame(self::VALUE, $actualValue);
     }
 
-    public function test_ZeroRowReturned_get_ShouldCloseResultCursorAndThrowKeyNotFoundException() {
+    public function test_ZeroRowReturned_get_ShouldCloseResultCursorAndThrowKeyNotFoundException()
+    {
         $this->givenConfiguredAdaptor();
         $this->result
             ->method('rowCount')
@@ -127,13 +138,14 @@ class AdaptorTest extends TestCase {
         $this->adaptor->get(self::KEY);
     }
 
-    public function test_ConfiguredAdaptor_delete_ShouldExecuteUpdate() {
+    public function test_ConfiguredAdaptor_delete_ShouldExecuteUpdate()
+    {
         $this->givenConfiguredAdaptor();
         $this->connection
             ->expects(self::once())
             ->method('executeStatement')
             ->with(
-                'DELETE FROM '.self::QUOTED_TABLE_NAME.' WHERE '.self::QUOTED_KEY_FIELD.' = ?;',
+                'DELETE FROM ' . self::QUOTED_TABLE_NAME . ' WHERE ' . self::QUOTED_KEY_FIELD . ' = ?;',
                 [self::KEY]
             )
             ->willReturn(1);
@@ -141,7 +153,8 @@ class AdaptorTest extends TestCase {
         $this->adaptor->delete(self::KEY);
     }
 
-    public function test_NoRowAffected_delete_ShouldThrowKeyNotFoundException() {
+    public function test_NoRowAffected_delete_ShouldThrowKeyNotFoundException()
+    {
         $this->givenConfiguredAdaptor();
         $this->connection
             ->method('executeStatement')
@@ -151,7 +164,8 @@ class AdaptorTest extends TestCase {
         $this->adaptor->delete(self::KEY);
     }
 
-    private function givenConfiguredAdaptor() {
+    private function givenConfiguredAdaptor()
+    {
         $this->connection
             ->method('quoteIdentifier')
             ->will($this->onConsecutiveCalls(
@@ -167,7 +181,8 @@ class AdaptorTest extends TestCase {
         $this->adaptor = new Adaptor($this->connection, self::TABLE_NAME, self::KEY_FIELD, self::VALUE_FIELD);
     }
 
-    private function givenRowReturned() {
+    private function givenRowReturned()
+    {
         $this->result
             ->method('rowCount')
             ->willReturn(1);
