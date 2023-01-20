@@ -1,0 +1,22 @@
+{
+  extends: [
+    "github>kronostechnologies/standards:renovate-base"
+  ],
+
+  reviewers: ["team:connect"],
+  labels: ["dependency-update"],
+
+  php: {
+    addLabels: ["php"],
+    packageRules: [
+      {
+        matchUpdateTypes: ["minor"],
+        groupName: "PHP minors",
+      },
+      {
+        matchUpdateTypes: ["patch"],
+        groupName: "PHP patches",
+      },
+    ],
+  },
+}

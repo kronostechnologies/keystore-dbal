@@ -4,8 +4,8 @@ namespace Kronos\Keystore\Repository\DBAL;
 
 use Doctrine\DBAL\Connection;
 
-class Factory {
-
+class Factory
+{
     /**
      * @param Connection $connection
      * @param $tableName
@@ -13,7 +13,8 @@ class Factory {
      * @param $valueField
      * @return Adaptor
      */
-    public function createDBALAdaptor(Connection $connection, $tableName, $keyField, $valueField) {
+    public function createDBALAdaptor(Connection $connection, $tableName, $keyField, $valueField)
+    {
         return new Adaptor($connection, $tableName, $keyField, $valueField);
     }
 }
