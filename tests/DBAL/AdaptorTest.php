@@ -7,9 +7,8 @@ use Doctrine\DBAL\Result;
 use Kronos\Keystore\Exception\KeyNotFoundException;
 use Kronos\Keystore\Repository\DBAL\Adaptor;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AdaptorTest extends TestCase
+class AdaptorTest extends ExtendedTestCase
 {
     private const TABLE_NAME = 'table';
     private const KEY_FIELD = 'keyField';
@@ -46,10 +45,12 @@ class AdaptorTest extends TestCase
         $this->connection
             ->expects(self::exactly(3))
             ->method('quoteIdentifier')
-            ->withConsecutive(
-                [self::TABLE_NAME],
-                [self::KEY_FIELD],
-                [self::VALUE_FIELD]
+            ->with(
+                ...self::withConsecutive(
+                    [self::TABLE_NAME],
+                    [self::KEY_FIELD],
+                    [self::VALUE_FIELD]
+                )
             );
 
         $this->adaptor = new Adaptor($this->connection, self::TABLE_NAME, self::KEY_FIELD, self::VALUE_FIELD);
