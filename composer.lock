@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c1dddd9596e8606f14480c9d43b468cf",
+    "content-hash": "a2c601721071cc384a4ba6e61382ed8d",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -101,16 +101,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "3.6.4",
+            "version": "3.6.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "19f0dec95edd6a3c3c5ff1d188ea94c6b7fc903f"
+                "reference": "96d5a70fd91efdcec81fc46316efc5bf3da17ddf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/19f0dec95edd6a3c3c5ff1d188ea94c6b7fc903f",
-                "reference": "19f0dec95edd6a3c3c5ff1d188ea94c6b7fc903f",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/96d5a70fd91efdcec81fc46316efc5bf3da17ddf",
+                "reference": "96d5a70fd91efdcec81fc46316efc5bf3da17ddf",
                 "shasum": ""
             },
             "require": {
@@ -125,10 +125,10 @@
             "require-dev": {
                 "doctrine/coding-standard": "12.0.0",
                 "fig/log-test": "^1",
-                "jetbrains/phpstorm-stubs": "2022.3",
-                "phpstan/phpstan": "1.10.14",
+                "jetbrains/phpstorm-stubs": "2023.1",
+                "phpstan/phpstan": "1.10.21",
                 "phpstan/phpstan-strict-rules": "^1.5",
-                "phpunit/phpunit": "9.6.7",
+                "phpunit/phpunit": "9.6.9",
                 "psalm/plugin-phpunit": "0.18.4",
                 "squizlabs/php_codesniffer": "3.7.2",
                 "symfony/cache": "^5.4|^6.0",
@@ -193,7 +193,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/3.6.4"
+                "source": "https://github.com/doctrine/dbal/tree/3.6.5"
             },
             "funding": [
                 {
@@ -209,7 +209,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-15T07:40:12+00:00"
+            "time": "2023-07-17T09:15:50+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -1996,16 +1996,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.2.5",
+            "version": "10.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "15a89f123d8ca9c1e1598d6d87a56a8bf28c72cd"
+                "reference": "1c17815c129f133f3019cc18e8d0c8622e6d9bcd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/15a89f123d8ca9c1e1598d6d87a56a8bf28c72cd",
-                "reference": "15a89f123d8ca9c1e1598d6d87a56a8bf28c72cd",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
+                "reference": "1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
                 "shasum": ""
             },
             "require": {
@@ -2077,7 +2077,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.5"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.6"
             },
             "funding": [
                 {
@@ -2093,7 +2093,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-14T04:18:47+00:00"
+            "time": "2023-07-17T12:08:28+00:00"
         },
         {
             "name": "psr/container",
@@ -2658,16 +2658,16 @@
         },
         {
             "name": "sebastian/global-state",
-            "version": "6.0.0",
+            "version": "6.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/global-state.git",
-                "reference": "aab257c712de87b90194febd52e4d184551c2d44"
+                "reference": "7ea9ead78f6d380d2a667864c132c2f7b83055e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/aab257c712de87b90194febd52e4d184551c2d44",
-                "reference": "aab257c712de87b90194febd52e4d184551c2d44",
+                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/7ea9ead78f6d380d2a667864c132c2f7b83055e4",
+                "reference": "7ea9ead78f6d380d2a667864c132c2f7b83055e4",
                 "shasum": ""
             },
             "require": {
@@ -2707,7 +2707,8 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/global-state/issues",
-                "source": "https://github.com/sebastianbergmann/global-state/tree/6.0.0"
+                "security": "https://github.com/sebastianbergmann/global-state/security/policy",
+                "source": "https://github.com/sebastianbergmann/global-state/tree/6.0.1"
             },
             "funding": [
                 {
@@ -2715,7 +2716,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-03T07:07:38+00:00"
+            "time": "2023-07-19T07:19:23+00:00"
         },
         {
             "name": "sebastian/lines-of-code",
