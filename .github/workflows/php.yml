@@ -10,7 +10,7 @@ on:
 
 jobs:
   php-library:
-    uses: equisoft-actions/php-workflows/.github/workflows/php-library.yml@v3
+    uses: equisoft-actions/php-workflows/.github/workflows/php-library.yml@9b9d3024ab40d6e142f6c50783b7a0fbabec3c81 # v4
     with:
       checks: phpcs,phpunit,psalm
       php-version: '8.1'
